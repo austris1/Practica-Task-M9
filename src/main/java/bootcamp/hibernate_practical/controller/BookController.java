@@ -1,0 +1,94 @@
+package bootcamp.hibernate_practical.controller;
+
+import bootcamp.hibernate_practical.dto.BookResponse;
+import bootcamp.hibernate_practical.dto.CreateBookRequest;
+import bootcamp.hibernate_practical.dto.UpdateBookRequest;
+import bootcamp.hibernate_practical.exception.BookNotFoundException;
+import bootcamp.hibernate_practical.service.BookService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/books")
+public class BookController {
+    private final BookService bookService;
+
+    public BookController(@Valid @RequestBody BookService bookService) {
+        this.bookService = bookService;
+    }
+
+    @PostMapping
+    public BookResponse createBook(@RequestBody CreateBookRequest createBookRequest) {
+        return bookService.createBook(createBookRequest);
+    }
+
+    @GetMapping
+    public List<BookResponse> getAllBooks() {
+        return bookService.getAllBooks();
+    }
+
+    @GetMapping("/{id}")
+    public BookResponse getBookById(@PathVariable Long id) {
+        return bookService.getBookById(id);
+    }
+
+    @PutMapping("/{id}")
+    public BookResponse updateBook(@PathVariable Long id, @Valid @RequestBody UpdateBookRequest updateBookRequest) {
+        return bookService.updateBook(id, updateBookRequest);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteBook(@PathVariable Long id) {
+        bookService.deleteBook(id);
+    }
+
+    @GetMapping("/author/{author}")
+    public List<BookResponse> getBooksByAuthor(@PathVariable String author) {
+        return bookService.findByAuthor(author);
+    }
+
+    @GetMapping("/available")
+    public List<BookResponse> getAvailableBooks() {
+        return bookService.findAvailableBooks();
+    }
+
+    @GetMapping("/after/{year}")
+    public List<BookResponse> getBooksPublishedAfter(@PathVariable int year) {
+        return bookService.findPublishedAfter(year);
+    }
+
+    @GetMapping("/count")
+    public long countBooks() {
+        return bookService.countBooks();
+    }
+
+    @GetMapping("/search")
+    public List<BookResponse> searchByTitle(@RequestParam String title) {
+        return bookService.searchByTitle(title);
+    }
+
+    @PutMapping("/{id}/borrow")
+    public BookResponse borrowBook(@PathVariable Long id) {
+        return bookService.borrowBook(id);
+    }
+
+    @PutMapping("/{id}/return")
+    public BookResponse returnBook(@PathVariable Long id) {
+        return bookService.returnBook(id);
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(BookNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleBorrowConflict(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+}
