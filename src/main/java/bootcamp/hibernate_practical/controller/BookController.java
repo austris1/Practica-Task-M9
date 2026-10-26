@@ -17,12 +17,12 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
 
-    public BookController(@Valid @RequestBody BookService bookService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
     @PostMapping
-    public BookResponse createBook(@RequestBody CreateBookRequest createBookRequest) {
+    public BookResponse createBook(@Valid @RequestBody CreateBookRequest createBookRequest) {
         return bookService.createBook(createBookRequest);
     }
 
