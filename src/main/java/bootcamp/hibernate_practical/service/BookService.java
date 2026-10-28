@@ -1,5 +1,6 @@
 package bootcamp.hibernate_practical.service;
 
+import bootcamp.hibernate_practical.dto.BookForm;
 import bootcamp.hibernate_practical.dto.BookResponse;
 import bootcamp.hibernate_practical.dto.CreateBookRequest;
 import bootcamp.hibernate_practical.dto.UpdateBookRequest;
@@ -131,5 +132,17 @@ public class BookService {
                 book.isAvailable(),
                 book.isBorrowedStatus()
         );
+    }
+
+    @Transactional
+    public BookResponse createFromForm(BookForm form) {
+        Book book = new Book(
+                form.getTitle(),
+                form.getAuthor(),
+                form.getGenre(),
+                form.getPublicationYear(),
+                true
+        );
+        return mapToResponse(bookRepository.save(book));
     }
 }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+</head>
+<body>
+<nav>
+    <a href="/">Home</a> |
+    <a href="/books">All books</a> |
+    <span th:if="${loggedIn}">
+    Logged in as <strong th:text="${username}">user</strong>
+    (<span th:text="${isAdmin} ? 'ADMIN' : 'USER'">USER</span>)
+    <form th:action="@{/logout}" method="post" style="display:inline">
+      <button type="submit">Log out</button>
+    </form>
+  </span>
+    <a th:unless="${loggedIn}" href="/login">Log in</a>
+</nav>
+<main>
+    <h1>Library Book Tracker</h1>
+    <p><a href="/books">View and add books</a></p>
+</main>
+</body>
+</html>
